@@ -1,51 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import classes from './AvailableMeals.module.css';
 
 import Card from '../UI/Card';
 import MealItem from './MealItem/MealItem';
-
-const DUMMY_MEALS = [
-  {
-    id: 'm1',
-    name: 'Sushi',
-    description: 'Finest fish and veggies',
-    price: 22.99,
-  },
-  {
-    id: 'm2',
-    name: 'Schnitzel',
-    description: 'A german specialty!',
-    price: 16.5,
-  },
-  {
-    id: 'm3',
-    name: 'Barbecue Burger',
-    description: 'American, raw, meaty',
-    price: 12.99,
-  },
-  {
-    id: 'm4',
-    name: 'Green Bowl',
-    description: 'Healthy...and green...',
-    price: 18.99,
-  },
-];
+import useAJAX from '../../hooks/useAJAX';
 
 const AvailableMeals = () => {
-  const mealsList = DUMMY_MEALS.map(meal => (
-    <MealItem
-      id={meal.id}
-      key={meal.id}
-      name={meal.name}
-      description={meal.description}
-      price={meal.price}
-    />
-  ));
+  const [meals, setMeals] = useState([]);
+  const { isLoading, error, sendRequest: fetchMeals } = useAJAX();
+
+  useEffect(() => {
+    const configObj = {
+      url: 'https://react-http-requests-15927-default-rtdb.europe-west1.firebasedatabase.app/meals.json',
+    };
+    const formatMeals = data => {
+      const loadedMeals = [];
+      for (const key in data) {
+        loadedMeals.push({
+          id: key,
+          name: data[key].name,
+          description: data[key].description,
+          price: data[key].price,
+        });
+      }
+      setMeals(loadedMeals);
+    };
+    fetchMeals(configObj, formatMeals);
+  }, [fetchMeals]);
+
+  let mealsContent = <p>No meals found</p>;
+  if (isLoading) mealsContent = <p>Loading...</p>;
+  if (error) mealsContent = <p style={{ color: 'red' }}>{error}</p>;
+  else
+    mealsContent = (
+      <ul>
+        {meals.map(meal => (
+          <MealItem
+            id={meal.id}
+            key={meal.id}
+            name={meal.name}
+            description={meal.description}
+            price={meal.price}
+          />
+        ))}
+      </ul>
+    );
+
   return (
     <section className={classes.meals}>
-      <Card>
-        <ul>{mealsList}</ul>
-      </Card>
+      <Card>{mealsContent}</Card>
     </section>
   );
 };
