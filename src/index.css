@@ -6,17 +6,26 @@
 
 html {
   font-family: 'Noto Sans JP', sans-serif;
-  font-size: 62.5%;
 }
 
 @media only screen and (max-width: 75em) {
   html {
-    font-size: 56.25%;
+    font-size: 87.5%;
   }
 }
 @media only screen and (max-width: 56.25em) {
   html {
-    font-size: 50%;
+    font-size: 75%;
+  }
+}
+@media only screen and (max-width: 37.5em) {
+  html {
+    font-size: 62.5%;
+  }
+}
+@media only screen and (max-width: 31.25em) {
+  html {
+    font-size: 56.25%;
   }
 }
 
