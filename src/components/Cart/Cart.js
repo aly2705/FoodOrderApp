@@ -3,7 +3,6 @@ import Modal from '../UI/Modal';
 import classes from './Cart.module.css';
 import CartContext from '../../store/cart-context';
 import CartItem from './CartItem';
-
 const Cart = props => {
   const cartContext = useContext(CartContext);
 
@@ -48,7 +47,11 @@ const Cart = props => {
             Clear cart
           </button>
         )}
-        {hasItems && <button className={classes.button}>Order</button>}
+        {hasItems && (
+          <button className={classes.button} onClick={props.onCheckout}>
+            Next Step &rarr;
+          </button>
+        )}
       </div>
     </Modal>
   );
