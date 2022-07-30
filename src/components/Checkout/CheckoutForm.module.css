@@ -1,3 +1,70 @@
-.checkout__form {
-  background-color: aliceblue;
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 1rem;
+  column-gap: 1.5rem;
+  padding: 1rem;
+}
+
+@media (max-width: 31.25em) {
+  .form {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form__group {
+  display: grid;
+  row-gap: 0.2rem;
+}
+.form__group:nth-child(3),
+.form__group:nth-child(4) {
+  grid-column: 1 / -1;
+}
+.form__group {
+  display: grid;
+  row-gap: 0.2rem;
+}
+.form__group input {
+  padding: 0.4rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  border: 1px solid rgb(189, 189, 189);
+  border-radius: 0.5rem;
+  outline: none;
+  transition: all 0.2s;
+}
+.form__group input:focus {
+  border: 1.5px solid rgb(127, 127, 127);
+}
+
+.form__buttons {
+  margin-top: 1rem;
+  text-align: right;
+  grid-column: 1 / -1;
+}
+
+.form__buttons button {
+  font: inherit;
+  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid #8a2b06;
+  padding: 0.5rem 2rem;
+  border-radius: 25px;
+  margin-left: 1rem;
+}
+
+.form__buttons button:hover,
+.form__buttons button:active {
+  background-color: #5a1a01;
+  border-color: #5a1a01;
+  color: white;
+}
+
+.form__buttons .button--alt {
+  color: #8a2b06;
+}
+
+.form__buttons .button {
+  background-color: #8a2b06;
+  color: white;
 }
