@@ -4,6 +4,7 @@
   row-gap: 1rem;
   column-gap: 1.5rem;
   padding: 1rem;
+  align-items: start;
 }
 
 @media (max-width: 31.25em) {
@@ -70,9 +71,30 @@
 }
 
 .form__error {
-  text-align: right;
-  margin: -0.1rem 0 -0.8rem 0;
-  grid-column: 1/ -1;
   color: red;
+
+  margin: -0.1rem 0 -0.6rem 0;
+}
+.form__error--fetch {
+  text-align: right;
+  grid-column: 1/ -1;
   font-weight: 600;
+}
+.invalid input {
+  border: 1px solid #b40e0e;
+  background-color: #fddddd;
+}
+
+.invalid input:focus {
+  border-color: #ff8800;
+  background-color: #fbe8d2;
+}
+
+.form button:disabled,
+.form button:disabled:hover,
+.form button:disabled:active {
+  background-color: #ccc;
+  color: #292929;
+  border-color: #ccc;
+  cursor: not-allowed;
 }

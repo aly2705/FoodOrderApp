@@ -3,18 +3,40 @@ import classes from './CheckoutForm.module.css';
 import CartContext from '../../store/cart-context';
 import Modal from '../UI/Modal';
 import useAJAX from '../../hooks/useAJAX';
+import useInput from '../../hooks/useInput';
 
 const CheckoutForm = props => {
   const cartContext = useContext(CartContext);
   const { error, sendRequest: sendOrder } = useAJAX();
 
+  const validateName = name => {
+    const regexp = new RegExp('^[A-Za-z]+$');
+    if (!regexp.test(name)) return false;
+    else return true;
+  };
+  const {
+    enteredValue: enteredFirstName,
+    valueIsValid: firstNameIsValid,
+    inputIsInvalid: firstNameInputIsInvalid,
+    changeHandler: changeFirstNameHandler,
+    blurHandler: blurFirstNameHandler,
+    resetInput: resetFirstName,
+  } = useInput(validateName);
+  const {
+    enteredValue: enteredLastName,
+    valueIsValid: lastNameIsValid,
+    inputIsInvalid: lastNameInputIsInvalid,
+    changeHandler: changeLastNameHandler,
+    blurHandler: blurLastNameHandler,
+    resetInput: resetLastName,
+  } = useInput(validateName);
+
   const finishSubmission = () => {
     props.onClose();
     cartContext.clearCart();
+    resetFirstName();
+    resetLastName();
   };
-
-  const changeFirstNameHandler = () => {};
-  const blurFirstNameHandler = () => {};
 
   const submitOrderHandler = async event => {
     event.preventDefault();
@@ -35,21 +57,41 @@ const CheckoutForm = props => {
 
     sendOrder(configObj, finishSubmission);
   };
+  const formIsValid = firstNameIsValid && lastNameIsValid;
+  const firstNameClasses = !firstNameInputIsInvalid
+    ? classes.form__group
+    : `${classes.form__group} ${classes.invalid}`;
+  const lastNameClasses = !lastNameInputIsInvalid
+    ? classes.form__group
+    : `${classes.form__group} ${classes.invalid}`;
   return (
     <Modal onClose={props.onClose}>
       <form className={classes.form} onSubmit={submitOrderHandler}>
-        <div className={classes.form__group}>
+        <div className={firstNameClasses}>
           <label htmlFor="first-name">First Name</label>
           <input
             type="text"
             id="first-name"
             onChange={changeFirstNameHandler}
             onBlur={blurFirstNameHandler}
+            value={enteredFirstName}
           />
+          {firstNameInputIsInvalid && (
+            <p className={classes.form__error}>Please enter a valid name</p>
+          )}
         </div>
-        <div className={classes.form__group}>
+        <div className={lastNameClasses}>
           <label htmlFor="last-name">Last Name</label>
-          <input type="text" id="last-name" />
+          <input
+            type="text"
+            id="last-name"
+            onChange={changeLastNameHandler}
+            onBlur={blurLastNameHandler}
+            value={enteredLastName}
+          />
+          {lastNameInputIsInvalid && (
+            <p className={classes.form__error}>Please enter a valid name</p>
+          )}
         </div>
         <div className={classes.form__group}>
           <label htmlFor="phone-number">Phone Number</label>
@@ -59,7 +101,13 @@ const CheckoutForm = props => {
           <label htmlFor="address">Address</label>
           <input type="text" id="address" />
         </div>
-        {error && <p className={classes.form__error}>⚠️ {error}</p>}
+        {error && (
+          <p
+            className={`${classes.form__error} ${classes['form__error--fetch']}`}
+          >
+            ⚠️ {error}
+          </p>
+        )}
         <div className={classes.form__buttons}>
           <button
             type="button"
@@ -68,7 +116,11 @@ const CheckoutForm = props => {
           >
             Close
           </button>
-          <button type="submit" className={classes.button}>
+          <button
+            type="submit"
+            disabled={!formIsValid}
+            className={classes.button}
+          >
             Send order
           </button>
         </div>
