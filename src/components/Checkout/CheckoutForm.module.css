@@ -68,3 +68,11 @@
   background-color: #8a2b06;
   color: white;
 }
+
+.form__error {
+  text-align: right;
+  margin: -0.1rem 0 -0.8rem 0;
+  grid-column: 1/ -1;
+  color: red;
+  font-weight: 600;
+}

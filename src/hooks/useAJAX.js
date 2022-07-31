@@ -4,7 +4,7 @@ const useAJAX = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const sendRequest = useCallback(async (configObj, applyData) => {
+  const sendRequest = useCallback(async (configObj, applyData = () => {}) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -14,7 +14,7 @@ const useAJAX = () => {
         body: configObj.body || null,
       });
       if (!response.ok) {
-        throw new Error('Something went wrong!');
+        throw new Error('Request failed!');
       }
       const data = await response.json();
       applyData(data);
