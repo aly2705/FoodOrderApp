@@ -4,16 +4,17 @@ import CartContext from '../../store/cart-context';
 import Modal from '../UI/Modal';
 import useAJAX from '../../hooks/useAJAX';
 import useInput from '../../hooks/useInput';
+import { FIREBASE_URL } from '../../helpers/config';
+import {
+  validateName,
+  validatePhoneNumber,
+  validateAddress,
+} from '../../helpers/helpers';
 
 const CheckoutForm = props => {
   const cartContext = useContext(CartContext);
   const { error, sendRequest: sendOrder } = useAJAX();
 
-  const validateName = name => {
-    const regexp = new RegExp('^[A-Za-z]+$');
-    if (!regexp.test(name)) return false;
-    else return true;
-  };
   const {
     enteredValue: enteredFirstName,
     valueIsValid: firstNameIsValid,
@@ -31,25 +32,45 @@ const CheckoutForm = props => {
     resetInput: resetLastName,
   } = useInput(validateName);
 
+  const {
+    enteredValue: enteredPhone,
+    valueIsValid: phoneIsValid,
+    inputIsInvalid: phoneInputIsInvalid,
+    changeHandler: changePhoneHandler,
+    blurHandler: blurPhoneHandler,
+    resetInput: resetPhone,
+  } = useInput(validatePhoneNumber);
+
+  const {
+    enteredValue: enteredAddress,
+    valueIsValid: addressIsValid,
+    inputIsInvalid: addressInputIsInvalid,
+    changeHandler: changeAddressHandler,
+    blurHandler: blurAddressHandler,
+    resetInput: resetAddress,
+  } = useInput(validateAddress);
+
   const finishSubmission = () => {
     props.onClose();
     cartContext.clearCart();
     resetFirstName();
     resetLastName();
+    resetPhone();
+    resetAddress();
   };
 
   const submitOrderHandler = async event => {
     event.preventDefault();
     const order = {
-      firstName: '',
-      lastName: '',
-      address: '',
-      phoneNumber: '',
+      firstName: enteredFirstName,
+      lastName: enteredLastName,
+      address: enteredAddress,
+      phoneNumber: enteredPhone,
       items: cartContext.items,
       totalAmount: cartContext.totalAmount,
     };
     const configObj = {
-      url: 'https://react-http-requests-15927-default-rtdb.europe-west1.firebasedatabase.app/orders.json',
+      url: `${FIREBASE_URL}/orders.json`,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order),
@@ -57,11 +78,18 @@ const CheckoutForm = props => {
 
     sendOrder(configObj, finishSubmission);
   };
-  const formIsValid = firstNameIsValid && lastNameIsValid;
+  const formIsValid =
+    firstNameIsValid && lastNameIsValid && phoneIsValid && addressIsValid;
   const firstNameClasses = !firstNameInputIsInvalid
     ? classes.form__group
     : `${classes.form__group} ${classes.invalid}`;
   const lastNameClasses = !lastNameInputIsInvalid
+    ? classes.form__group
+    : `${classes.form__group} ${classes.invalid}`;
+  const phoneClasses = !phoneInputIsInvalid
+    ? classes.form__group
+    : `${classes.form__group} ${classes.invalid}`;
+  const addressClasses = !addressInputIsInvalid
     ? classes.form__group
     : `${classes.form__group} ${classes.invalid}`;
   return (
@@ -93,13 +121,35 @@ const CheckoutForm = props => {
             <p className={classes.form__error}>Please enter a valid name</p>
           )}
         </div>
-        <div className={classes.form__group}>
+        <div className={phoneClasses}>
           <label htmlFor="phone-number">Phone Number</label>
-          <input type="tel" id="phone-number" />
+          <input
+            type="tel"
+            id="phone-number"
+            onChange={changePhoneHandler}
+            onBlur={blurPhoneHandler}
+            value={enteredPhone}
+          />
+          {phoneInputIsInvalid && (
+            <p className={classes.form__error}>
+              Please enter a valid phone number (xxx-xxx-xxxx)
+            </p>
+          )}
         </div>
-        <div className={classes.form__group}>
+        <div className={addressClasses}>
           <label htmlFor="address">Address</label>
-          <input type="text" id="address" />
+          <input
+            type="text"
+            id="address"
+            onChange={changeAddressHandler}
+            onBlur={blurAddressHandler}
+            value={enteredAddress}
+          />
+          {addressInputIsInvalid && (
+            <p className={classes.form__error}>
+              Please enter a valid address (non-empty value)
+            </p>
+          )}
         </div>
         {error && (
           <p

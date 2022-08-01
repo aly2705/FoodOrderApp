@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import classes from './AvailableMeals.module.css';
 
+import { FIREBASE_URL } from '../../helpers/config';
 import Card from '../UI/Card';
 import MealItem from './MealItem/MealItem';
 import useAJAX from '../../hooks/useAJAX';
@@ -11,7 +12,7 @@ const AvailableMeals = () => {
 
   useEffect(() => {
     const configObj = {
-      url: 'https://react-http-requests-15927-default-rtdb.europe-west1.firebasedatabase.app/meals.json',
+      url: `${FIREBASE_URL}/meals.json`,
     };
     const formatMeals = data => {
       const loadedMeals = [];
