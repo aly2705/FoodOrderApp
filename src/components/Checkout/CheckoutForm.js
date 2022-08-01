@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import classes from './CheckoutForm.module.css';
 import CartContext from '../../store/cart-context';
 import Modal from '../UI/Modal';
@@ -14,6 +14,8 @@ import {
 const CheckoutForm = props => {
   const cartContext = useContext(CartContext);
   const { error, sendRequest: sendOrder } = useAJAX();
+  const [wasSuccessfullySubmitted, setWasSuccessfullySubmitted] =
+    useState(false);
 
   const {
     enteredValue: enteredFirstName,
@@ -51,7 +53,7 @@ const CheckoutForm = props => {
   } = useInput(validateAddress);
 
   const finishSubmission = () => {
-    props.onClose();
+    setWasSuccessfullySubmitted(true);
     cartContext.clearCart();
     resetFirstName();
     resetLastName();
@@ -92,6 +94,22 @@ const CheckoutForm = props => {
   const addressClasses = !addressInputIsInvalid
     ? classes.form__group
     : `${classes.form__group} ${classes.invalid}`;
+
+  if (wasSuccessfullySubmitted)
+    return (
+      <Modal onClose={props.onClose}>
+        <p>Your order was successfully submitted! Thank you!</p>
+        <div className={classes.form__buttons}>
+          <button
+            type="button"
+            className={classes.button}
+            onClick={props.onClose}
+          >
+            Close
+          </button>
+        </div>
+      </Modal>
+    );
   return (
     <Modal onClose={props.onClose}>
       <form className={classes.form} onSubmit={submitOrderHandler}>
@@ -165,6 +183,13 @@ const CheckoutForm = props => {
             onClick={props.onClose}
           >
             Close
+          </button>
+          <button
+            type="button"
+            className={classes['button-alt']}
+            onClick={props.onBackToCart}
+          >
+            Back
           </button>
           <button
             type="submit"

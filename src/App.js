@@ -22,12 +22,21 @@ function App() {
   const hideCheckoutHandler = () => {
     setCheckoutIsShown(false);
   };
+  const backToCartHandler = () => {
+    setCheckoutIsShown(false);
+    setCartIsShown(true);
+  };
   return (
     <CartProvider>
       {cartIsShown && (
         <Cart onClose={hideCartHandler} onCheckout={goToCheckoutHandler} />
       )}
-      {checkoutIsShown && <CheckoutForm onClose={hideCheckoutHandler} />}
+      {checkoutIsShown && (
+        <CheckoutForm
+          onClose={hideCheckoutHandler}
+          onBackToCart={backToCartHandler}
+        />
+      )}
       <Header onShowCart={showCartHandler} />
       <main>
         <Meals />

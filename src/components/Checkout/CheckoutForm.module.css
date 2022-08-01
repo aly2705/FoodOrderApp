@@ -90,11 +90,11 @@
   background-color: #fbe8d2;
 }
 
-.form button:disabled,
-.form button:disabled:hover,
-.form button:disabled:active {
-  background-color: #ccc;
-  color: #292929;
-  border-color: #ccc;
+.form__buttons button:disabled,
+.form__buttons button:disabled:hover,
+.form__buttons button:disabled:active {
+  background-color: #5a1a01;
+  border-color: #5a1a01;
+  opacity: 0.7;
   cursor: not-allowed;
 }
